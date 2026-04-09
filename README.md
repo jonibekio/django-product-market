@@ -1,4 +1,4 @@
-# Django Dars 8
+# Django 
 
 <p align="center">
   Django asosida yaratilgan mahsulotlar platformasi: kategoriya, profil, va bir nechta rasm bilan CRUD.
