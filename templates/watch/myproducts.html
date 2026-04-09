@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Mening mahsulotlarim{% endblock title %}
+
+{% block hero_title %}Mening mahsulotlarim{% endblock hero_title %}
+
+{% block hero_text %}
+    Siz kiritgan mahsulotlar ro'yxati. Kerak bo'lsa tahrirlash yoki o'chirish mumkin.
+{% endblock hero_text %}
+
+{% block hero_actions %}
+    <a class="btn btn-primary" href="{% url 'create' %}">Yangi mahsulot</a>
+    <a class="btn btn-secondary" href="/">Bosh sahifa</a>
+{% endblock hero_actions %}
+
+{% block content %}
+    <div class="grid product-grid">
+        {% for p in products %}
+            <article class="product-card">
+                {% with product_images=p.images.all %}
+                    {% if product_images %}
+                        <div class="product-media js-product-slider">
+                            <div class="product-track">
+                                {% for image in product_images %}
+                                    <div class="product-slide">
+                                        <img src="{{ image.image.url }}" alt="{{ p.name }}" loading="lazy" draggable="false">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if product_images|length > 1 %}
+                                <button class="product-nav-btn product-nav-prev" type="button" data-action="prev" aria-label="Oldingi rasm">&#10094;</button>
+                                <button class="product-nav-btn product-nav-next" type="button" data-action="next" aria-label="Keyingi rasm">&#10095;</button>
+                                <div class="product-dots">
+                                    {% for image in product_images %}
+                                        <button class="product-dot{% if forloop.first %} is-active{% endif %}" type="button" data-index="{{ forloop.counter0 }}" aria-label="Rasm {{ forloop.counter }}"></button>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="product-media">
+                            <div class="no-image">Rasm yo'q</div>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <div class="product-body">
+                    <h3>{{ p.name }}</h3>
+                    <p>{{ p.description|truncatewords:14 }}</p>
+                    <p class="price">{{ p.price }} so'm</p>
+                </div>
+
+                <div class="product-actions stack-actions">
+                    <a href="{% url 'detail' p.pk %}" class="btn btn-primary btn-block">Batafsil</a>
+                    <a href="{% url 'update' p.pk %}" class="btn btn-secondary btn-block">Tahrirlash</a>
+                    <form method="post" action="{% url 'delete' p.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-block">O'chirish</button>
+                    </form>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <h3>Sizda mahsulotlar yo'q</h3>
+                <p>Birinchi mahsulotingizni qo'shib, ro'yxatni shakllantiring.</p>
+                <a href="{% url 'create' %}" class="btn btn-primary">Mahsulot qo'shish</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

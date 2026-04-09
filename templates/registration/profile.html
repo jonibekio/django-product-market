@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Profil{% endblock title %}
+
+{% block hero_title %}Shaxsiy profil{% endblock hero_title %}
+
+{% block hero_text %}
+    Profil ma'lumotlaringiz, avatar va tezkor sozlamalar shu yerda.
+{% endblock hero_text %}
+
+{% block hero_actions %}
+    <a class="btn btn-primary" href="{% url 'edit-profile' profile_user.pk %}">Profilni tahrirlash</a>
+    <a class="btn btn-secondary" href="{% url 'password-change' profile_user.pk %}">Parolni almashtirish</a>
+{% endblock hero_actions %}
+
+{% block content %}
+    <div class="two-col-layout">
+        <article class="card profile-card">
+            {% if profile_user.avatar %}
+                <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}" class="profile-avatar">
+            {% else %}
+                <div class="profile-avatar-fallback">
+                    {{ profile_user.username|slice:":1"|upper }}
+                </div>
+            {% endif %}
+            <h2 class="profile-name">{{ profile_user.get_full_name|default:profile_user.username }}</h2>
+            <p class="section-subtitle profile-username">@{{ profile_user.username }}</p>
+        </article>
+
+        <article class="card meta-list">
+            <h3 class="section-mini-title">Asosiy ma'lumotlar</h3>
+            <p><strong>Email:</strong> {{ profile_user.email|default:"Kiritilmagan" }}</p>
+            <p><strong>Yosh:</strong> {{ profile_user.age|default:"Kiritilmagan" }}</p>
+            <p><strong>Manzil:</strong> {{ profile_user.address|default:"Kiritilmagan" }}</p>
+            <p><strong>Ro'yxatdan o'tgan:</strong> {{ profile_user.date_joined|date:"d.m.Y H:i" }}</p>
+            <div class="hero-actions hero-actions-tight">
+                <a class="btn btn-secondary" href="/">Bosh sahifa</a>
+                <a class="btn btn-secondary" href="{% url 'myProducts' %}">Mening mahsulotlarim</a>
+            </div>
+        </article>
+    </div>
+{% endblock content %}

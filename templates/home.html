@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Bosh sahifa{% endblock title %}
+
+{% block hero_title %}
+    {% if user.is_authenticated %}
+        Xush kelibsiz, {{ user.username }}!
+    {% else %}
+        Django darslari platformasiga xush kelibsiz
+    {% endif %}
+{% endblock hero_title %}
+
+{% block hero_text %}
+    {% if page_obj %}
+        So'nggi qo'shilgan mahsulotlar ro'yxati va sahifalash orqali ko'rish imkoniyati.
+    {% elif user.is_authenticated %}
+        Kategoriyalar bo'yicha mahsulotlarni tez ko'rib chiqing va kerakli bo'limni tanlang.
+    {% else %}
+        Saytdan to'liq foydalanish uchun tizimga kiring yoki yangi hisob yarating.
+    {% endif %}
+{% endblock hero_text %}
+
+{% block hero_actions %}
+    {% if user.is_authenticated %}
+        {% if page_obj %}
+            <a class="btn btn-primary" href="#mahsulotlar">Mahsulotlarni ko'rish</a>
+        {% else %}
+            <!-- <a class="btn btn-primary" href="#kategoriyalar">Kategoriyalarni ko'rish</a> -->
+        {% endif %}
+        <a class="btn btn-secondary" href="{% url 'myProducts' %}">Mening mahsulotlarim</a>
+    {% else %}
+        <a class="btn btn-primary" href="{% url 'login' %}">Kirish</a>
+        <a class="btn btn-secondary" href="{% url 'signup' %}">Ro'yxatdan o'tish</a>
+    {% endif %}
+{% endblock hero_actions %}
+
+{% block content %}
+    {% if page_obj %}
+        <section id="mahsulotlar">
+            <h2 class="section-title">Mahsulotlar ro'yxati</h2>
+            <p class="section-subtitle">So'nggi qo'shilgan mahsulotlar.</p>
+
+            <div class="grid product-grid">
+                {% for p in page_obj %}
+                    <article class="product-card">
+                        {% with product_images=p.images.all %}
+                            {% if product_images %}
+                                <div class="product-media js-product-slider">
+                                    <div class="product-track">
+                                        {% for image in product_images %}
+                                            <div class="product-slide">
+                                                <img src="{{ image.image.url }}" alt="{{ p.name }}" loading="lazy" draggable="false">
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% if product_images|length > 1 %}
+                                        <button class="product-nav-btn product-nav-prev" type="button" data-action="prev" aria-label="Oldingi rasm">&#10094;</button>
+                                        <button class="product-nav-btn product-nav-next" type="button" data-action="next" aria-label="Keyingi rasm">&#10095;</button>
+                                        <div class="product-dots">
+                                            {% for image in product_images %}
+                                                <button class="product-dot{% if forloop.first %} is-active{% endif %}" type="button" data-index="{{ forloop.counter0 }}" aria-label="Rasm {{ forloop.counter }}"></button>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="product-media">
+                                    <div class="no-image">Rasm yo'q</div>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+
+                        <div class="product-body">
+                            <h3>{{ p.name }}</h3>
+                            <p>{{ p.description|truncatewords:14 }}</p>
+                            <p class="price">{{ p.price }} so'm</p>
+                        </div>
+
+                        <div class="product-actions">
+                            <a class="btn btn-primary btn-block" href="{% url 'detail' p.pk %}">Batafsil</a>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="empty-state">
+                        <h3>Mahsulot topilmadi</h3>
+                        <p>Hozircha mahsulotlar mavjud emas.</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="hero-actions hero-actions-tight">
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-secondary" href="?page={{ page_obj.previous_page_number }}">Oldingi</a>
+                {% endif %}
+                <span class="info-pill">
+                    Sahifa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </span>
+                {% if page_obj.has_next %}
+                    <a class="btn btn-secondary" href="?page={{ page_obj.next_page_number }}">Keyingi</a>
+                {% endif %}
+            </div>
+        </section>
+    {% else %}
+        <section id="kategoriyalar">
+            <h2 class="section-title">Kategoriyalar</h2>
+            <p class="section-subtitle">Kerakli bo'limni tanlab, ichidagi mahsulotlarni ko'rishingiz mumkin.</p>
+
+            <div class="grid">
+                {% for c in kategoriyalar %}
+                    <article class="card">
+                        <h3>{{ c.name }}</h3>
+                        <p>Ushbu bo'limdagi barcha mahsulotlarni bir joyda ko'ring.</p>
+                        <div class="card-actions">
+                            <a class="btn btn-primary" href="{% url 'categories_products' c.pk %}">Mahsulotlarni ochish</a>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="empty-state">
+                        <h3>Hozircha kategoriya topilmadi</h3>
+                        <p>Yaqinda yangi kategoriyalar qo'shiladi.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+{% endblock content %}

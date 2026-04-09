@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Mahsulotni yangilash{% endblock title %}
+
+{% block hero_title %}Mahsulotni tahrirlash{% endblock hero_title %}
+
+{% block hero_text %}
+    "{{ product.name }}" ma'lumotlarini yangilang va saqlang.
+{% endblock hero_text %}
+
+{% block hero_actions %}
+    <a class="btn btn-secondary" href="{% url 'detail' product.pk %}">Mahsulotga qaytish</a>
+    <a class="btn btn-secondary" href="/">Bosh sahifaga qaytish</a>
+{% endblock hero_actions %}
+
+{% block content %}
+    <div class="form-card form-card-wide">
+        <h2>Mahsulotni yangilash</h2>
+        <p class="section-subtitle">Quyidagi maydonlarni o'zgartirib, saqlash tugmasini bosing.</p>
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for err in form.non_field_errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="form-fields">
+            {% csrf_token %}
+            {% for field in form %}
+                <p>
+                    {{ field.label_tag }}
+                    {% if field.name == "images" %}
+                        <input type="file" name="images" id="{{ field.id_for_label }}" multiple accept="image/*">
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for err in field.errors %}
+                                <li>{{ err }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </p>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary btn-block">Saqlash</button>
+        </form>
+
+        {% if product.images.all %}
+            <div class="hero-actions-tight">
+                <h3 class="section-mini-title">Joriy rasmlar</h3>
+                <div class="image-thumb-grid">
+                    {% for img in product.images.all %}
+                        <div class="image-thumb-card">
+                            <img src="{{ img.image.url }}" alt="{{ product.name }}" class="image-thumb">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

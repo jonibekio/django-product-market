@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Ro'yxatdan o'tish{% endblock title %}
+
+{% block hero_title %}Yangi hisob yaratish{% endblock hero_title %}
+
+{% block hero_text %}
+    Bir necha qadamda ro'yxatdan o'tib, platformadan to'liq foydalanishni boshlang.
+{% endblock hero_text %}
+
+{% block hero_actions %}
+    <a class="btn btn-secondary" href="{% url 'login' %}">Akkountim bor</a>
+{% endblock hero_actions %}
+
+{% block content %}
+    <div class="form-card">
+        <h2>Ro'yxatdan o'tish</h2>
+        <p class="section-subtitle">Kerakli maydonlarni to'ldirib, yangi hisob oching.</p>
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for err in form.non_field_errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="form-fields">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-block">Ro'yxatdan o'tish</button>
+        </form>
+
+        <p class="form-help">
+            Profilingiz bormi? <a href="{% url 'login' %}">Kirish</a>
+        </p>
+    </div>
+{% endblock content %}

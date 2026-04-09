@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Kirish{% endblock title %}
+
+{% block hero_title %}Tizimga kirish{% endblock hero_title %}
+
+{% block hero_text %}
+    Hisobingiz orqali mahsulotlar va kategoriyalar bilan ishlashni davom ettiring.
+{% endblock hero_text %}
+
+{% block hero_actions %}
+    <a class="btn btn-secondary" href="{% url 'signup' %}">Yangi hisob yaratish</a>
+{% endblock hero_actions %}
+
+{% block content %}
+    <div class="form-card">
+        <h2>Kirish</h2>
+        <p class="section-subtitle">Login va parolingizni kiriting.</p>
+
+        {% if error %}
+            <ul class="errorlist">
+                <li>{{ error }}</li>
+            </ul>
+        {% endif %}
+
+        <form method="post" class="form-fields">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-block">Kirish</button>
+        </form>
+
+        <p class="form-help">
+            Hali ro'yxatdan o'tmaganmisiz? <a href="{% url 'signup' %}">Ro'yxatdan o'tish</a>
+        </p>
+    </div>
+{% endblock content %}

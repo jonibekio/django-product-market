@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Yangi mahsulot{% endblock title %}
+
+{% block hero_title %}Yangi mahsulot qo'shish{% endblock hero_title %}
+
+{% block hero_text %}
+    Mahsulot ma'lumotlarini kiriting va bir nechta rasm yuklashingiz mumkin.
+{% endblock hero_text %}
+
+{% block hero_actions %}
+    <a class="btn btn-secondary" href="{% url 'myProducts' %}">Mening mahsulotlarim</a>
+    <a class="btn btn-secondary" href="/">Bosh sahifaga qaytish</a>
+{% endblock hero_actions %}
+
+{% block content %}
+    <div class="form-card form-card-wide">
+        <h2>Mahsulot yaratish</h2>
+        <p class="section-subtitle">Barcha kerakli maydonlarni to'ldiring.</p>
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for err in form.non_field_errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="form-fields">
+            {% csrf_token %}
+            {% for field in form %}
+                <p>
+                    {{ field.label_tag }}
+                    {% if field.name == "images" %}
+                        <input type="file" name="images" id="{{ field.id_for_label }}" multiple accept="image/*">
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for err in field.errors %}
+                                <li>{{ err }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </p>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">Saqlash</button>
+        </form>
+    </div>
+{% endblock content %}

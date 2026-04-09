@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ kategoriya.name }} - Mahsulotlar{% endblock title %}
+
+{% block hero_title %}{{ kategoriya.name }} bo'limi{% endblock hero_title %}
+
+{% block hero_text %}
+    Ushbu kategoriyadagi mahsulotlarni ko'ring, rasmlarni chap/o'ng surib almashtiring.
+{% endblock hero_text %}
+
+{% block hero_actions %}
+    <a class="btn btn-secondary" href="/">Bosh sahifaga qaytish</a>
+    {% if user.is_authenticated %}
+        <a class="btn btn-primary" href="{% url 'create' %}">Yangi mahsulot qo'shish</a>
+    {% endif %}
+{% endblock hero_actions %}
+
+{% block content %}
+    <nav class="breadcrumb" aria-label="breadcrumb">
+        <a href="/">Bosh sahifa</a>
+        <span>/</span>
+        <span>{{ kategoriya.name }}</span>
+    </nav>
+
+    <h2 class="section-title">{{ kategoriya.name }} kategoriyasidagi mahsulotlar</h2>
+    <p class="section-subtitle">Kartadagi rasm ustida chap/o'ng surib boshqa rasmlarni ko'rishingiz mumkin.</p>
+
+    <div class="grid product-grid">
+        {% for mahsulot in mahsulotlar %}
+            <article class="product-card">
+                {% with product_images=mahsulot.images.all %}
+                    {% if product_images %}
+                        <div class="product-media js-product-slider">
+                            <div class="product-track">
+                                {% for image in product_images %}
+                                    <div class="product-slide">
+                                        <img src="{{ image.image.url }}" alt="{{ mahsulot.name }}" loading="lazy" draggable="false">
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            {% if product_images|length > 1 %}
+                                <button class="product-nav-btn product-nav-prev" type="button" data-action="prev" aria-label="Oldingi rasm">&#10094;</button>
+                                <button class="product-nav-btn product-nav-next" type="button" data-action="next" aria-label="Keyingi rasm">&#10095;</button>
+                                <div class="product-dots">
+                                    {% for image in product_images %}
+                                        <button class="product-dot{% if forloop.first %} is-active{% endif %}" type="button" data-index="{{ forloop.counter0 }}" aria-label="Rasm {{ forloop.counter }}"></button>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="product-media">
+                            <div class="no-image">Rasm yo'q</div>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <div class="product-body">
+                    <h3>{{ mahsulot.name }}</h3>
+                    <p>{{ mahsulot.description|truncatewords:16 }}</p>
+                    <p class="price">{{ mahsulot.price }} so'm</p>
+                </div>
+
+                <div class="product-actions">
+                    <a href="{% url 'detail' mahsulot.pk %}" class="btn btn-primary btn-block">Batafsil</a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <h3>Bu kategoriyada mahsulot yo'q</h3>
+                <p>Hozircha ushbu kategoriyaga mahsulot qo'shilmagan.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'create' %}" class="btn btn-primary">Birinchi mahsulotni qo'shish</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

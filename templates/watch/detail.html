@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Mahsulot tafsiloti{% endblock title %}
+
+{% block hero_title %}Mahsulot tafsiloti{% endblock hero_title %}
+
+{% block hero_text %}
+    Mahsulotning rasmlari va barcha asosiy texnik ma'lumotlari.
+{% endblock hero_text %}
+
+{% block hero_actions %}
+    <a class="btn btn-secondary" href="/">Bosh sahifaga qaytish</a>
+    <a class="btn btn-secondary" href="{% url 'myProducts' %}">Mening mahsulotlarim</a>
+{% endblock hero_actions %}
+
+{% block content %}
+    <div class="two-col-layout">
+        <article class="product-card">
+            {% with product_images=product.images.all %}
+                {% if product_images %}
+                    <div class="product-media js-product-slider">
+                        <div class="product-track">
+                            {% for image in product_images %}
+                                <div class="product-slide">
+                                    <img src="{{ image.image.url }}" alt="{{ product.name }}" loading="lazy" draggable="false">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if product_images|length > 1 %}
+                            <button class="product-nav-btn product-nav-prev" type="button" data-action="prev" aria-label="Oldingi rasm">&#10094;</button>
+                            <button class="product-nav-btn product-nav-next" type="button" data-action="next" aria-label="Keyingi rasm">&#10095;</button>
+                            <div class="product-dots">
+                                {% for image in product_images %}
+                                    <button class="product-dot{% if forloop.first %} is-active{% endif %}" type="button" data-index="{{ forloop.counter0 }}" aria-label="Rasm {{ forloop.counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="product-media">
+                        <div class="no-image">Rasm yo'q</div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </article>
+
+        <article class="card">
+            <h2 class="section-title section-title-spaced">{{ product.name }}</h2>
+            <p><strong>Brend:</strong> {{ product.brand }}</p>
+            <p><strong>Kategoriya:</strong> {{ product.category.name }}</p>
+            <p><strong>Sotuvchi:</strong> {{ product.sotuvchi.username }}</p>
+            <p><strong>Rangi:</strong> {{ product.color }}</p>
+            <p><strong>Kafolat:</strong> {{ product.warranty_months }} oy</p>
+            <p><strong>Omborda:</strong> {{ product.stock }} dona</p>
+            <p class="price detail-price">{{ product.price }} so'm</p>
+            <p class="detail-description">{{ product.description }}</p>
+
+            {% if user.is_authenticated and user == product.sotuvchi %}
+                <div class="hero-actions hero-actions-tight">
+                    <a class="btn btn-primary" href="{% url 'update' product.pk %}">Tahrirlash</a>
+                    <form method="post" action="{% url 'delete' product.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">O'chirish</button>
+                    </form>
+                </div>
+            {% endif %}
+        </article>
+    </div>
+{% endblock content %}
