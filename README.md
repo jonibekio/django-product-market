@@ -1,169 +1,80 @@
-# Django 
+# Django Product Market — Product Catalog Demo
 
-<p align="center">
-  Django asosida yaratilgan mahsulotlar platformasi: kategoriya, profil, va bir nechta rasm bilan CRUD.
-</p>
+![Python](https://img.shields.io/badge/Python-Django-3776AB?logo=python&logoColor=white) ![Django](https://img.shields.io/badge/Django-templates-092E20?logo=django&logoColor=white) ![Database](https://img.shields.io/badge/Database-SQLite-lightgrey?logo=sqlite&logoColor=white)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.x-1f6feb?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/Django-6.0-0b3d2e?style=for-the-badge&logo=django&logoColor=white" alt="Django">
-  <img src="https://img.shields.io/badge/Database-SQLite-003b57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite">
-  <img src="https://img.shields.io/badge/Template-Django_Templates-3f2b96?style=for-the-badge" alt="Templates">
-</p>
+## Overview
 
----
+A learning-scale Django product catalog with account/profile workflows and seller-owned product CRUD. Products support category browsing and multiple uploaded images. This repository does not implement a cart, checkout, or order-processing system.
 
-## Loyiha haqida
+## Features
 
-Ushbu loyiha Django darslari uchun yozilgan amaliy market platforma.  
-Foydalanuvchi ro'yxatdan o'tadi, tizimga kiradi, profilini boshqaradi, mahsulot qo'shadi va mahsulotga bir nechta rasm yuklaydi.
+- Custom account/profile model and session authentication.
+- Product categories and product list/detail views.
+- Create, update, and delete a seller's own products.
+- Multiple product image uploads and a client-side image slider.
+- User-specific product listing.
 
-Frontend `templates/` asosida zamonaviy uslubda yozilgan va mahsulot rasmlari uchun slider mavjud.
+## Screenshots
 
-## Asosiy imkoniyatlar
+No product screenshots are tracked in the repository.
 
-- Custom user modeli (`accounts.CustomUser`)
-  - `age`, `address`, `avatar`
-- Autentifikatsiya
-  - ro'yxatdan o'tish, kirish, chiqish
-  - profil ko'rish, tahrirlash, parol almashtirish
-- Mahsulotlar moduli
-  - kategoriya bo'yicha filter
-  - yaratish, tahrirlash, o'chirish, detail
-  - foydalanuvchining o'z mahsulotlari sahifasi
-- Bir nechta rasm yuklash
-  - `multiple` file input
-  - backendda `request.FILES.getlist("images")`
-- Slider
-  - chap/o'ng orqali rasm almashtirish
-  - tugmalar va nuqtalar bilan navigatsiya
+## Technology stack and architecture
 
-## Afzalliklari
+Python, Django templates, SQLite, Pillow/ImageField, CSS, and JavaScript. The Django project separates account/profile workflows (`accounts`) from catalog/product workflows (`watch`).
 
-- Sodda va tushunarli arxitektura (`accounts` va `watch` app'lari alohida)
-- Foydalanuvchi uchun to'liq CRUD oqimi (qo'shish, ko'rish, tahrirlash, o'chirish)
-- Bir nechta rasm yuklash imkoniyati (`multiple upload`)
-- Mobilga mos va zamonaviy template dizayn
-- Ruxsatlar bilan himoyalangan sahifalar (tasodifiy kirishlar bloklanadi)
-- Portfolio va o'quv loyiha sifatida GitHub uchun tayyor
+```text
+accounts/     Custom user, authentication, profile forms/views
+watch/        Categories, products, image records, CRUD views
+config/       Django settings and URL routing
+templates/    Server-rendered pages
+media/        Uploaded product images
+manage.py
+```
 
-## Kirishdan keyingi ruxsatlar
+## Installation
 
-- Login qilgan foydalanuvchi (admin bo'lsa ham, saytning custom sahifalarida) faqat **o'z profil ma'lumotlarini** ko'ra oladi.
-- Boshqa foydalanuvchi profiliga URL orqali kirishga urinsa, ruxsat berilmaydi.
-- Mahsulotni faqat uni yaratgan foydalanuvchi tahrirlaydi yoki o'chira oladi.
-- `My Products` sahifasida faqat kirgan foydalanuvchining o'z mahsulotlari chiqadi.
+The repository does not include a dependency manifest. Install the dependencies in a fresh environment:
 
-Eslatma: Django’ning standart `/admin/` panelida superuser barcha ma'lumotlarni ko'ra oladi. Yuqoridagi cheklovlar saytning custom sahifalari (`/profile/...`, `/watch/...`) uchun amal qiladi.
-
-## Texnologiyalar
-
-| Qism | Texnologiya |
-|---|---|
-| Backend | Django |
-| DB | SQLite |
-| Frontend | Django Templates, CSS, JavaScript |
-| Media | Pillow + ImageField |
-
-## O'rnatish va ishga tushirish
-
-### 1) Virtual muhit
-
-```powershell
+```bash
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
-
-Agar `python` ishlamasa:
-
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
-
-### 2) Kutubxonalar
-
-```powershell
-pip install django pillow
-```
-
-### 3) Migratsiyalar
-
-```powershell
-python manage.py makemigrations
+source .venv/bin/activate
+python -m pip install Django Pillow
 python manage.py migrate
-```
-
-### 4) Superuser (ixtiyoriy)
-
-```powershell
-python manage.py createsuperuser
-```
-
-### 5) Serverni ishga tushirish
-
-```powershell
 python manage.py runserver
 ```
 
-Brauzerda oching: `http://127.0.0.1:8000/`
+Open `http://127.0.0.1:8000/`. SQLite and local media storage are development defaults.
 
-## URL yo'llar
+## Environment variables
 
-### Accounts
+No environment-variable contract is documented. The project currently uses development settings. Before hosting, configure a unique secret, `DEBUG=False`, exact allowed hosts, and durable/private media storage.
 
-| Yo'l | Tavsif |
-|---|---|
-| `/` | Bosh sahifa |
-| `/signup/` | Ro'yxatdan o'tish |
-| `/login/` | Kirish |
-| `/logout/` | Chiqish |
-| `/profile/<pk>/` | Profil |
-| `/profile/<pk>/edit/` | Profilni tahrirlash |
-| `/profile/<pk>/password/` | Parolni almashtirish |
+## Routes and API documentation
 
-### Watch (mahsulotlar)
+This application uses Django HTML views and does not expose a REST API. Account and product routes are declared in `accounts/urls.py` and `watch/urls.py`; verify the source URL patterns for the current exact paths.
 
-| Yo'l | Tavsif |
-|---|---|
-| `/watch/category/<pk>/` | Kategoriya mahsulotlari |
-| `/watch/create/` | Mahsulot qo'shish |
-| `/watch/update/<pk>/` | Mahsulotni tahrirlash |
-| `/watch/detail/<pk>/` | Mahsulot tafsiloti |
-| `/watch/delete/<pk>/` | Mahsulotni o'chirish |
-| `/watch/my_products/` | Mening mahsulotlarim |
-| `/watch/products/` | Paginationsiz emas, sahifalangan ro'yxat |
+## Database
 
-## Media sozlamalari
+Django models store accounts, product categories, products, and product images. Local development uses SQLite and Django migrations.
 
-`config/settings.py` ichida media sozlangan:
+## Usage
 
-- `MEDIA_URL = '/media/'`
-- `MEDIA_ROOT = BASE_DIR / 'media/'`
+Create an account, sign in, browse products, and create/manage only products associated with your account. Product-image uploads are stored under the configured media directory.
 
-`DEBUG=True` holatda media fayllar lokalda avtomatik servis qilinadi.
+## Tests and deployment
 
-## Loyiha strukturasi
+There are no substantive tests, pinned dependency manifest, CI workflow, Docker configuration, or platform deployment files. The existing test modules are placeholders. Local Django development server is the only documented execution path.
 
-```text
-django_dars8/
-  accounts/               # User, auth, profile
-  watch/                  # Category, product, images
-  templates/              # Barcha HTML shablonlar
-  config/                 # settings.py, urls.py
-  media/                  # Yuklangan rasmlar
-  db.sqlite3
-  manage.py
-```
+## Security notes
 
-## Muhim eslatmalar
+- Django production security settings must be added before internet exposure.
+- Verify object-level ownership checks for every product/profile mutation.
+- Do not use this learning project to process real orders or payments; those flows are not implemented.
+- Database, media, and Python cache artifacts are tracked and should be reviewed separately.
 
-- `SECRET_KEY` va `DEBUG` productionga chiqarishda albatta o'zgartiriladi.
-- `ALLOWED_HOSTS` production server uchun to'ldiriladi.
-- Bu loyiha dars/portfolio uchun mos.
+## Future improvements
 
----
-
-## Author
-
-`Jonibeks` loyihasi asosida tayyorlangan Django amaliyoti.
+- Add a dependency manifest and meaningful tests for account ownership and uploads.
+- Add pagination and accessible upload validation.
+- Implement cart/order workflows only as an explicit future feature.
+- Add production settings, CI, and real screenshots.
